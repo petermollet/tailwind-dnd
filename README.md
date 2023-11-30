@@ -6,7 +6,9 @@ A project to show a drag & drop, used in a Kanban, using the dependency: [dnd-ki
 
 There is no restrictions on the kanban, it's a simple one only to show how it works.
 
+[//]: # (add image preview.png)
 
+![preview](https://raw.githubusercontent.com/petermollet/tailwind-dnd/main/preview.png)
 
 ## Build
 

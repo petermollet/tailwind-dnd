@@ -23,8 +23,7 @@
     "noImplicitThis": true,
     "strictNullChecks": true,
     "strictBindCallApply": true,
-    "noImplicitOverride": true,
-    "semicolon": true,
+    "noImplicitOverride": true
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

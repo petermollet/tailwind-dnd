@@ -104,7 +104,6 @@ const KanbanBoard = () => {
                 return arrayMove(tasks, activeIndex, activeIndex);
             });
         }
-
     }
 
     const handleChangeColumnTitle = (id: string, title: string) => {

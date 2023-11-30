@@ -70,7 +70,7 @@ const ColumnContainer = ({ column, deleteColumn, setTitle, createTask, tasks, de
             >
                 <div className="flex items-center gap-2 h-full">
                     <div className="flex justify-center items-center text-sm rounded-full bg-slate-200 px-2 py-1" >
-                        0
+                        {tasks.length}
                     </div>
                     <DndInputTitle title={column.title} setTitle={setTitle} editMode={editMode} setEditMode={setEditMode} />
                 </div>

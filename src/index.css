@@ -13,7 +13,7 @@
 }
 
 ::-webkit-scrollbar:horizontal {
-    height: 8px;
+    height: 20px;
 }
 
 ::-webkit-scrollbar-thumb {

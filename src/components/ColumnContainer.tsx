@@ -1,17 +1,28 @@
 import {Column} from "../types/Column.ts";
 import {TrashIcon} from "@heroicons/react/24/solid";
-import {useSortable} from "@dnd-kit/sortable";
+import {SortableContext, useSortable} from "@dnd-kit/sortable";
 import {CSS} from "@dnd-kit/utilities";
-import {useState} from "react";
+import {useMemo, useState} from "react";
+import {PlusCircleIcon} from "@heroicons/react/24/outline";
+import DndInputTitle from "./DndInputText.tsx";
+import {Task} from "../types/Task.ts";
+import TaskCard from "./TaskCard.tsx";
 
 interface Props {
     column: Column;
     deleteColumn: (id: string) => void;
     setTitle: (title: string) => void;
+    tasks: Task[];
+    createTask: (id: string) => void;
+    deleteTask: (id: string) => void;
+    changeTaskTitle: (id: string, title: string) => void;
 }
 
-const ColumnContainer = ({ column, deleteColumn, setTitle }: Props) => {
+const ColumnContainer = ({ column, deleteColumn, setTitle, createTask, tasks, deleteTask, changeTaskTitle }: Props) => {
     const [editMode, setEditMode] = useState<boolean>(false);
+    const tasksIds = useMemo(() => {
+        return tasks.map((task) => task.id);
+    }, [tasks]);
 
     const {
         setNodeRef,
@@ -54,13 +65,14 @@ const ColumnContainer = ({ column, deleteColumn, setTitle }: Props) => {
             <div
                 {...attributes}
                 {...listeners}
-                className="h-14 flex justify-between items-center bg-slate-100 text-md font-bold cursor-grab rounded-md rounded-b-none px-3 py-1 border-4 border-slate-200"
+                className="h-14 flex justify-between items-center px-3 py-1 text-md font-bold
+                bg-slate-100 border-4 border-slate-200 cursor-grab rounded-md rounded-b-none "
             >
                 <div className="flex items-center gap-2 h-full">
                     <div className="flex justify-center items-center text-sm rounded-full bg-slate-200 px-2 py-1" >
                         0
                     </div>
-                    <InputTitle title={column.title} setTitle={setTitle} editMode={editMode} setEditMode={setEditMode} />
+                    <DndInputTitle title={column.title} setTitle={setTitle} editMode={editMode} setEditMode={setEditMode} />
                 </div>
                 <button
                     onClick={() => deleteColumn(column.id)}
@@ -69,52 +81,32 @@ const ColumnContainer = ({ column, deleteColumn, setTitle }: Props) => {
                     <TrashIcon className="h-6 w-6 " />
                 </button>
             </div>
-            <div className="flex flex-grow">
-                content
+
+            <div className="pt-1 flex flex-grow overflow-y-auto">
+                <div className="w-full flex flex-col gap-3">
+                    <SortableContext items={tasksIds}>
+                        {tasks.map((task) => (
+                            <TaskCard
+                                task={task}
+                                deleteTask={() => deleteTask(task.id)}
+                                setTitle={(value) => changeTaskTitle(task.id, value)}
+                                key={task.id}
+                            />
+                        ))}
+                    </SortableContext>
+                </div>
             </div>
-            <div>footer</div>
+
+            <button
+                className="flex items-center gap-2 h-14 w-full p-4 rounded-lg rounded-t-none
+                border-4 border-slate-200 focus:outline-none active:bg-slate-100 hover:text-indigo-500"
+                onClick={() => createTask(column.id)}
+            >
+                <PlusCircleIcon className="h-6 w-6" />
+                Add task
+            </button>
         </div>
     )
 }
 
 export default ColumnContainer;
-
-
-interface PropsInputTitle {
-    title: string;
-    setTitle: (title: string) => void;
-    editMode: boolean;
-    setEditMode: (editMode: boolean) => void;
-}
-
-const InputTitle = ({ title, setTitle, editMode, setEditMode }: PropsInputTitle) => {
-    const [value, setValue] = useState<string>(title);
-
-    const content = editMode
-    ?  (
-        <input
-            autoFocus
-            className="text-md font-normal outline-none"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            onBlur={() => setEditMode(false)}
-            onKeyDown={(e) => {
-                if(e.key === "Enter") {
-                    setEditMode(false);
-                    setTitle(value);
-                }
-            }}
-        />
-    ) : (
-        <>{title}</>
-    )
-
-    return(
-        <button
-            onClick={() => setEditMode(true)}
-            className="text-md font-normal outline-none"
-        >
-            {content}
-        </button>
-    )
-}
